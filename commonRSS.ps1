@@ -48,7 +48,7 @@ Function global:ReadRSS([string[]] $feeds, $maxFeedItems = 1){
         $row = New-Object PSObject -Property @{
           Channel = $chanTitle
           Title = $title
-          Link  = "<a href='$link' >$chanTitle</a>"
+          Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
           Date  = $pubDate
         }
         $newsList.Add($row) > $null;
