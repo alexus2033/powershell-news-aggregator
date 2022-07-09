@@ -1,15 +1,16 @@
 ﻿$pageTitle = "Tech-News Demo"
 
+$feeds = @(
+    'https://www.techrepublic.com/rssfeeds/articles/'
+    'https://www.techradar.com/rss'
+    'https://www.computerweekly.com/rss/IT-security.xml'
+)
+$maxFeedItems = 5
+
 $channels = @(
     'UCAuUUnT6oDeKwE6v1NGQxug' #TED video channel
 )
 $maxChanItems = 2
-
-$feeds = @(
-    'https://www.techrepublic.com/rssfeeds/articles/'
-    'https://www.techradar.com/rss'
-)
-$maxFeedItems = 10
 
 .\common.ps1
 

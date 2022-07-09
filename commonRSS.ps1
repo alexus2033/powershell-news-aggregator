@@ -1,53 +1,58 @@
-Function global:ReadRSS([string[]] $feeds, $maxEntries = 1){
+Function global:ReadRSS([string[]] $feeds, $maxFeedItems = 1){
 
   # Ensures that Invoke-WebRequest uses TLS 1.2
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-  $ReportData = [System.Collections.ArrayList]@()
-
+  $newsList = [System.Collections.ArrayList]@()
+  
   foreach($rss in $feeds){
     $webResult = Invoke-RestMethod -Uri $rss -UserAgent $global:agent -Headers $global:headers
     if($webResult.count -eq 0) { break }
 
-    if($webResult[0].title -is [array]){
-       $title = $webResult[0].title[0]
-    } elseif ($webResult[0].title.innertext) {
-       $title = $webResult[0].title.innertext
-    } else {
-       $title = $webResult[0].title
-    }
+    for($x=0;$x -le $maxFeedItems-1;$x++)
+    {
+        if($webResult[$x].title -is [array]){
+           $title = $webResult[$x].title[0]
+        } elseif ($webResult[$x].title.innertext) {
+           $title = $webResult[$x].title.innertext
+        } else {
+           $title = $webResult[$x].title
+        }
     
-    $chanTitle = ($rss -split "^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)")[1]
-    if($webResult[0].author.name -ne $null){
-      $chanTitle = $webResult[0].author.name
-    } elseif ($webResult[0].author -ne $null){
-      $chanTitle = $webResult[0].author
-    }
+        $chanTitle = ($rss -split "^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)")[1]
+        if($webResult[$x].author.'#cdata-section'){
+          $chanTitle =$webResult[$x].author.'#cdata-section'
+        } elseif($webResult[$x].author.name){
+          $chanTitle = $webResult[$x].author.name
+        } elseif ($webResult[$x].author){
+          $chanTitle = $webResult[$x].author
+        }
 
-    if($webResult[0].published -ne $null){
-        $blubb = [datetime]$webResult[0].published
-    } elseif ($webResult[0].pubdate -ne $null) {
-        $blubb = [datetime]$webResult[0].pubdate
-    } else {
-        $blubb = $webResult[0].date -replace "T"," "
-        $blubb = [datetime]($blubb.substring(0,19))
-    }
+        if($webResult[$x].published){
+          $pubDate = [datetime]$webResult[$x].published
+        } elseif ($webResult[$x].date) {
+          $pubDate = $webResult[$x].date -replace "T"," "
+          $pubDate = [datetime]($blubb.substring(0,19))
+        } else {
+          $pubDate = $webResult[$x].pubdate
+        }
 
-    if($webResult[0].link.href -ne $null){
-      $link = $webResult[0].link.href
-    } elseif($webResult[0].link.innertext -ne $null){ 
-      $link = $webResult[0].link.innertext
-    } else {
-      $link = $webResult[0].link
-    }
+        if($webResult[$x].link.href){
+          $link = $webResult[$x].link.href
+        } elseif($webResult[$X].link.innertext){ 
+          $link = $webResult[$X].link.innertext
+        } else {
+          $link = $webResult[$x].link
+        }
 
-    $row = New-Object PSObject -Property @{
-      Channel = $chanTitle
-      Title = $title
-      Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
-      Date  = $blubb.ToLocalTime()
+        $row = New-Object PSObject -Property @{
+          Channel = $chanTitle
+          Title = $title
+          Link  = "<a href='$link' >$chanTitle</a>"
+          Date  = $pubDate
+        }
+        $newsList.Add($row) > $null;
     }
-    $ReportData.Add($row) > $null;
   }
-  return $ReportData
+  return $newsList
 }
