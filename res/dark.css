@@ -63,6 +63,7 @@ tr td:first-child {
     display: flex;
     align-items: left;
 }
+
 .timestamp {
     white-space: nowrap;
     padding-left: 10px;
@@ -71,3 +72,11 @@ tr td:first-child {
     float: right;
 }
 
+#floatingimg {
+    position: absolute;
+    display: none;
+    max-height: 200;
+    z-index: 1;
+    border: 2px solid rgb(190, 190, 190);
+    pointer-events: none;
+  }
