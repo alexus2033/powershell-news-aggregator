@@ -2,8 +2,10 @@
 
 # List your product-keywords here:
 $searchList = @(
-  'Nokia+Communicator'
-  'Siemens+Cnetz'
+  'Denon+DBT'
+  'Denon+DN'
+  'Denon+DN-M2300r'
+  'DEQ2496'
 )
 
 $pageTitle = "Ebay-Watch"
@@ -83,18 +85,18 @@ foreach($product in $searchList) {
 
       $bytes = [System.Text.Encoding]::Unicode.GetBytes($link)
       $jsLink =[Convert]::ToBase64String($bytes)
-      $moob="<a data=""$link"" href='javascript:markEntry(""$link"",""$title"",""$cat"");'>Marker</a>"
-
+      $moob="<a data=""$link"" href='javascript:markDBEntry(""$link"",""$title"",""$cat"");'>Marker</a>"
 
       $row = New-Object PSObject -Property @{
         Channel = $chanTitle
         Title = $title
-        Link  = "<a href='$link' target='_blank'>$cat</a>"
+        Link  = "<a href='$link' onpointerenter=""showImage('$imgLink')"" onpointerleave=""hideImage()"" target='_blank'>$cat</a>"
         Published  = $pubDate
         EndDate = $CloseDate
         Bids = $BidCount
         Price = $CurrentPrice
         FixPrice = $BuyItNowPrice
+        Action = $moob
       }
       $ReportData.Add($row) > $null;
     }
@@ -103,7 +105,8 @@ foreach($product in $searchList) {
 # prepare html-table
 $timestamp = Get-Date -Format "HH:mm"
 $ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$timestamp</div></div>"
-$ReportFooter = @("<br><a href='?refresh=1'>update</a><script src=res/tsorter.min.js></script>
+$ReportFooter = @("<br><a href='?refresh=1'>update</a><img id='floatingimg' onerror=""javascript: alert('failure')""></img>
+        <script src=res/tsorter.min.js></script>
         <script src=res/moment.js></script>
         <script src=res/dexie.min.js></script>
         <script src=res/ebayTable.js></script>")
