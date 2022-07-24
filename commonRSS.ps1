@@ -1,25 +1,31 @@
-Function global:ReadRSS([string[]] $feeds, $maxFeedItems = 1){
+Function global:readRSS([string[]] $rssList, $maxFeedItems = 1){
 
-  # Ensures that Invoke-WebRequest uses TLS 1.2
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  $readRSS={
+    param( [String]$rssFeed,
+           $maxFeedItems = 1 )
 
-  $newsList = [System.Collections.ArrayList]@()
+    $agents = [Microsoft.PowerShell.Commands.PSUserAgent]
+    $x=(Get-random -Minimum 1 -Maximum $agents.GetProperties().count)
+    $agent = $agents.GetProperties()[$x-1]
   
-  foreach($rss in $feeds){
-    $webResult = Invoke-RestMethod -Uri $rss -UserAgent $global:agent -Headers $global:headers
+    # Ensures that Invoke-WebRequest uses TLS 1.2
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $newsList = [System.Collections.ArrayList]@()
+
+    $webResult = Invoke-RestMethod -Uri $rssFeed -UserAgent $agent #-Headers $global:headers
     if($webResult.count -eq 0) { break }
 
     for($x=0;$x -le $maxFeedItems-1;$x++)
     {
         if($webResult[$x].title -is [array]){
-           $title = $webResult[$x].title[0]
+            $title = $webResult[$x].title[0]
         } elseif ($webResult[$x].title.innertext) {
-           $title = $webResult[$x].title.innertext
+            $title = $webResult[$x].title.innertext
         } else {
-           $title = $webResult[$x].title
+            $title = $webResult[$x].title
         }
     
-        $chanTitle = ($rss -split "^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)")[1]
+        $chanTitle = ($rssFeed -split "^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)")[1]
         if($webResult[$x].author.'#cdata-section'){
           $chanTitle =$webResult[$x].author.'#cdata-section'
         } elseif($webResult[$x].author.name){
@@ -53,6 +59,10 @@ Function global:ReadRSS([string[]] $feeds, $maxFeedItems = 1){
         }
         $newsList.Add($row) > $null;
     }
+    return $newsList
   }
-  return $newsList
+
+  $resultList = global:Worker $readRSS $rssList 1
+  return $resultList
+
 }
