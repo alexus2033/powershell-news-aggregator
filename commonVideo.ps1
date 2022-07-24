@@ -44,7 +44,7 @@ function global:CalcTime([string]$info){
    }
  }
  
-function global:ReadVideoUrl($index = 1){
+function ReadVideoUrl($index = 1){
    # Ensures that Invoke-WebRequest uses TLS 1.2
    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
    $videoSearch = "https://api.invidious.io/instances.json?pretty=1&sort_by=type,health"
@@ -54,13 +54,43 @@ function global:ReadVideoUrl($index = 1){
 }
 
 function global:ReadInvidious([string[]] $channels, [int] $maxChanItems = 1){
+   
+   $readVideos={
+      param( [String]$chan,
+             [string]$videoSearch,
+             $maxChanItems = 1 )
 
-   $videoSearch = global:ReadVideoUrl
-   $ReportData = [System.Collections.ArrayList]@()
+             function CalcTime([string]$info){
+               $part = $info -split '\s+'
+               if($part[1] -match '^[0-9]+$'){
+                  $number = [int]$part[1]
+                  if($part[2].StartsWith("minute")){
+                     return (get-date).AddMinutes($number*-1)
+                  }
+                  if($part[2].StartsWith("hour")){
+                     return (get-date).AddHours($number*-1)
+                  }
+                  if($part[2].StartsWith("day")){
+                     return (get-date).AddDays($number*-1)
+                  }
+                  if($part[2].StartsWith("week")){
+                     return (get-date).AddDays($number*-7)
+                  }
+                  if($part[2].StartsWith("month")){
+                   return (get-date).AddDays($number*-30)
+                  }
+               }
+             }
+            
+      $agents = [Microsoft.PowerShell.Commands.PSUserAgent]
+      $x=(Get-random -Minimum 1 -Maximum $agents.GetProperties().count)
+      $agent = $agents.GetProperties()[$x-1]
+    
+      # Ensures that Invoke-WebRequest uses TLS 1.2
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      $newsList = [System.Collections.ArrayList]@()
 
-   foreach($chan in $channels){
-
-      $webResult = Invoke-WebRequest "$videoSearch/channel/$chan" -UserAgent $global:agent -Headers $global:headers
+      $webResult = Invoke-WebRequest "$videoSearch/channel/$chan" -UserAgent $agent #-Headers $global:headers
       $htmldom = ConvertFrom-Html $webResult
   
       $chanTitle = $htmldom.SelectNodes("//div/div[@class='channel-profile']/span")
@@ -79,13 +109,17 @@ function global:ReadInvidious([string[]] $channels, [int] $maxChanItems = 1){
             Channel = $chanTitle.innerhtml
             Title = $title.innerhtml
             Link  = "<a href='$link' target='_blank'>$($chanTitle.innerhtml)</a>"
-            Date =  (global:CalcTime $timeText)
+            Date =  (CalcTime $timeText)
           }
           # put one row together...                                  
-          $ReportData.Add($row) > $null;
+          $newsList.Add($row) > $null;
       }
-  }
-  return $ReportData  
+      return $newsList
+   }
+   
+   $videoSearch = ReadVideoUrl
+   $resultList = global:Worker $readVideos $channels $videoSearch
+   return $resultList  
 }
 
 function global:ReadInvidious2([string[]] $channels){
