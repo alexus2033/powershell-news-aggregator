@@ -3,16 +3,12 @@ Function global:readRSS([string[]] $rssList, $maxFeedItems = 1){
   $readRSS={
     param( [String]$rssFeed,
            $maxFeedItems = 1 )
-
-    $agents = [Microsoft.PowerShell.Commands.PSUserAgent]
-    $x=(Get-random -Minimum 1 -Maximum $agents.GetProperties().count)
-    $agent = $agents.GetProperties()[$x-1]
-  
+ 
     # Ensures that Invoke-WebRequest uses TLS 1.2
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $newsList = [System.Collections.ArrayList]@()
 
-    $webResult = Invoke-RestMethod -Uri $rssFeed -UserAgent $agent #-Headers $global:headers
+    $webResult = Invoke-RestMethod -Uri $rssFeed -UserAgent GetAgent #-Headers $global:headers
     if($webResult.count -eq 0) { break }
 
     for($x=0;$x -le $maxFeedItems-1;$x++)

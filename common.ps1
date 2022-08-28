@@ -49,7 +49,18 @@ Function global:WritePage {
   ## used for parallell processing with old powershell-versions
 Function global:Worker($Script, $List, $params = $null, $maxTreads = 8){
 
-  $RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $maxTreads)
+  $sessionstate = [System.Management.Automation.Runspaces.InitialSessionState]::CreateDefault()
+  $FunkNames = Get-ChildItem function:\ | Select-Object -ExpandProperty Name
+  $UserFunctions = @( Get-ChildItem function:\ | Where-Object { $FunkNames -notcontains "global:Worker" } )
+
+  if($UserFunctions.count -gt 0) {
+     foreach ($FunctionDef in $UserFunctions) {
+        $sessionstate.Commands.Add((New-Object System.Management.Automation.Runspaces.SessionStateFunctionEntry -ArgumentList $FunctionDef.Name, $FunctionDef.ScriptBlock))
+        Write-Host $FunctionDef.Name
+     }
+  }
+
+  $RunspacePool = [RunspaceFactory]::CreateRunspacePool(1, $maxTreads, $sessionstate, $Host)
   $RunspacePool.Open()
   $Jobs = @()
 
