@@ -1,14 +1,21 @@
-﻿$pageTitle = "Tech-News Demo"
+﻿# Powershell-Script to generate "http://localhost:8800/demo.html"
+# Use this example to create your personal news-portal
 
+$pageTitle = "Tech-News Demo"
+
+# list of RSS-Feeds
 $feeds = @(
-    'https://www.techrepublic.com/rssfeeds/articles/'
-    'https://www.techradar.com/rss'
-    'https://www.computerweekly.com/rss/IT-security.xml'
+    'https://www.techrepublic.com/rssfeeds/articles/'     #Tech-Republic
+    'https://www.techradar.com/rss'                       #Techradar
+    'https://www.computerweekly.com/rss/IT-security.xml'  #add your favorites here!
 )
 $maxFeedItems = 5
 
+# list of YouTube-Channels,
+# add only the last part of url: https://www.youtube.com/channel/UCAuUUnT6oDeKwE6v1NGQxug
 $channels = @(
     'UCAuUUnT6oDeKwE6v1NGQxug' #TED video channel
+    'UCK7tptUDHh-RYDsdxO1-5QQ'
 )
 $maxChanItems = 2
 
