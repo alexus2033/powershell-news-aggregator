@@ -78,10 +78,6 @@ function global:ReadInvidious([string[]] $channels, [int] $maxChanItems = 1){
       param( [String]$chan,
              [string]$videoSearch,
              $maxChanItems = 1 )
-   
-      $agents = [Microsoft.PowerShell.Commands.PSUserAgent]
-      $x=(Get-random -Minimum 1 -Maximum $agents.GetProperties().count)
-      $agent = $agents.GetProperties()[$x-1]
     
       # Ensures that Invoke-WebRequest uses TLS 1.2
       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
