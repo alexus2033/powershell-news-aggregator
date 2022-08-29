@@ -62,7 +62,7 @@ Function global:readRSS{
 
         $row = New-Object PSObject -Property @{
           Channel = $chanTitle
-          Title = $title
+          Title = "<a href='$link' target='_blank'>$title</a>"
           Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
           Date  = $pubDate
         }

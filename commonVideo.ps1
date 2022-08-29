@@ -113,8 +113,8 @@ function global:ReadInvidious{
   
         $row = New-Object PSObject -Property @{
         Channel = $chanTitle.innerhtml
-        Title = $title.innerhtml
-        Link  = "<a href='$link' target='_blank'>$($chanTitle.innerhtml)</a>"
+        Title = "<a href='$link' target='_blank'>$($title.innerhtml)</a>"
+        Link  = "<a href='$videoSearch/channel/$chan' target='_blank'>$($chanTitle.innerhtml)</a>"
         Date = (CalcTime $timeText)
         }
         # put one row together...                                  

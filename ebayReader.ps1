@@ -83,14 +83,14 @@ foreach($product in $searchList) {
         $link = $item.link
       }
 
-      $bytes = [System.Text.Encoding]::Unicode.GetBytes($link)
-      $jsLink =[Convert]::ToBase64String($bytes)
+      #$bytes = [System.Text.Encoding]::Unicode.GetBytes($link)
+      #$jsLink =[Convert]::ToBase64String($bytes)
       $moob="<a data=""$link"" href='javascript:markDBEntry(""$link"",""$title"",""$cat"");'>Marker</a>"
 
       $row = New-Object PSObject -Property @{
         Channel = $chanTitle
-        Title = $title
-        Link  = "<a href='$link' onpointerenter=""showImage('$imgLink')"" onpointerleave=""hideImage()"" target='_blank'>$cat</a>"
+        Title = "<a href='$link' onpointerenter=""showImage('$imgLink')"" onpointerleave=""hideImage()"" target='_blank'>$title</a>"
+        Category  = $cat
         Published  = $pubDate
         EndDate = $CloseDate
         Bids = $BidCount
@@ -115,7 +115,7 @@ $ReportFooter = @("<br><a href='?refresh=1'>update</a><img id='floatingimg' oner
 Push-Location $PSScriptRoot
 
 # Create a sorted HTML table
-$page = ($ReportData |  Sort-Object {$_.EndDate -as [DateTime]} | Select-Object Published, EndDate, Title, FixPrice, Price, Bids,@{N='Category';E={$_.Link}} | ConvertTo-Html -CSSUri res/dark.css -title $pageTitle -PreContent "$ReportHeader" -PostContent "$ReportFooter")
+$page = ($ReportData |  Sort-Object {$_.EndDate -as [DateTime]} | Select-Object Published, EndDate, Title, FixPrice, Price, Bids, Category | ConvertTo-Html -CSSUri res/dark.css -title $pageTitle -PreContent "$ReportHeader" -PostContent "$ReportFooter")
 
 $html = global:SetPageHeader $page 
 global:writePage $html "ebay.html"

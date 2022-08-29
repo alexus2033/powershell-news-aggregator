@@ -15,8 +15,11 @@ $maxFeedItems = 3
 $channels = @(
     'UCAuUUnT6oDeKwE6v1NGQxug' #TED video channel
     'UCAY_M9HyJb8oMKPV1utQQyA' #TechRadar
+    'UC6mIxFTvXkWQVEHPsEdflzQ' #great scott
+    'UC2DjFE7Xf11URZqWBigcVOQ' #EEV Blog
+    'UCafxR2HWJRmMfSdyZXvZMTw' #look,mum no computers
 )
-$maxChanItems = 3
+$maxChanItems = 2
 
 .\common.ps1
 
