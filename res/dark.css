@@ -25,9 +25,11 @@ tr:hover td
 }
 a:link {
     color: #f0f0f0;
+    text-decoration: none;
 }
 a:visited {
     color: green;
+    text-decoration: none;
 }
 tr:nth-child(even)
 {
