@@ -43,7 +43,7 @@ $ReportFooter = @("<br><a href='?refresh=1'>update</a><script src=res/moment.js>
 Push-Location $PSScriptRoot
 
 # Create an HTML table
-$page = ($ReportData |  Sort-Object {$_.Date -as [DateTime]} -Descending | Select-Object Date, Title ,@{N='Channel';E={$_.Link}} | ConvertTo-Html -CSSUri res/dark.css -title $pageTitle -PreContent "$($ReportHeader)" -PostContent "$($ReportFooter)")
+$page = ($ReportData |  Sort-Object {$_.Date -as [DateTime]} -Descending | Select-Object Date, Title ,@{N='Channel';E={$_.Link}} | ConvertTo-Html -title $pageTitle -PreContent "$($ReportHeader)" -PostContent "$($ReportFooter)")
 
 # Set html-headers and save it to "demo.html"
 $html = SetPageHeader $page 

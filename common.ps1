@@ -27,13 +27,18 @@ Function global:SetPageHeader {
     [string] $html
   )
   $htmlDom = ConvertFrom-Html([System.Web.HttpUtility]::HtmlDecode($page))
-  $test = $htmlDom.SelectSingleNode('//head') 
-  $favIcon = [HtmlAgilityPack.HtmlNode]::CreateNode('<link rel="shortcut icon" href="res/favicon.ico"/>')
-  $refresh = [HtmlAgilityPack.HtmlNode]::CreateNode('<meta http-equiv="refresh" content="60"/>')
-  $charSet = [HtmlAgilityPack.HtmlNode]::CreateNode('<meta charset="utf-8"/>')
-  $test.childNodes.Add($favIcon)
-  $test.childNodes.Add($refresh)
-  $test.childNodes.Add($charSet)
+  $root = $htmlDom.SelectSingleNode('//head')
+  $nodes = @('<link rel="shortcut icon" href="res/favicon.ico"/>'
+             '<link rel="stylesheet" href="res/dark.css" media="(prefers-color-scheme: dark)" />'
+             '<link rel="stylesheet" href="res/light.css" media="(prefers-color-scheme: light)" />'
+             '<meta http-equiv="refresh" content="60"/>'
+             '<meta charset="utf-8"/>')
+  
+  foreach($entry in $nodes){
+    $node = [HtmlAgilityPack.HtmlNode]::CreateNode($entry)
+    $root.childNodes.Add($node)
+  }
+
   return $htmlDom.OuterHtml
 }
 
