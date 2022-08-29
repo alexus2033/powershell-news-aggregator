@@ -6,29 +6,28 @@ $pageTitle = "Tech-News Demo"
 # list of RSS-Feeds
 $feeds = @(
     'https://www.techrepublic.com/rssfeeds/articles/'     #Tech-Republic
-    'https://www.techradar.com/rss'                       #Techradar
     'https://www.computerweekly.com/rss/IT-security.xml'  #add your favorites here!
 )
-$maxFeedItems = 5
+$maxFeedItems = 3
 
 # list of YouTube-Channels,
 # add only the last part of url: https://www.youtube.com/channel/UCAuUUnT6oDeKwE6v1NGQxug
 $channels = @(
     'UCAuUUnT6oDeKwE6v1NGQxug' #TED video channel
-    'UCK7tptUDHh-RYDsdxO1-5QQ'
+    'UCAY_M9HyJb8oMKPV1utQQyA' #TechRadar
 )
-$maxChanItems = 2
+$maxChanItems = 3
 
 .\common.ps1
 
 $ReportData = [System.Collections.ArrayList]@()
 
 .\commonRSS.ps1
-$newsFeeds = global:ReadRSS $feeds $maxFeedItems
+$newsFeeds = ReadRSSList $feeds $maxFeedItems
 $ReportData.Addrange($newsFeeds)
 
 .\commonVideo.ps1
-$videos = global:ReadInvidious $channels $maxChanItems
+$videos = ReadVideoList $channels $maxChanItems
 $ReportData.Addrange($videos)
 
 # prepare html-table
@@ -44,5 +43,5 @@ Push-Location $PSScriptRoot
 $page = ($ReportData |  Sort-Object {$_.Date -as [DateTime]} -Descending | Select-Object Date, Title ,@{N='Channel';E={$_.Link}} | ConvertTo-Html -CSSUri res/dark.css -title $pageTitle -PreContent "$($ReportHeader)" -PostContent "$($ReportFooter)")
 
 # Set html-headers and save it to "demo.html"
-$html = global:SetPageHeader $page 
-global:writePage $html "demo.html"
+$html = SetPageHeader $page 
+WritePage $html "demo.html"

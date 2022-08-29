@@ -1,8 +1,21 @@
-Function global:readRSS([string[]] $rssList, $maxFeedItems = 1){
+## Get entries of different ATOM/RSS-Feeds
+Function global:readRSSList {
+  
+  param([string[]] $rssList,
+        [int] $maxFeedItems = 1 )
 
-  $readRSS={
-    param( [String]$rssFeed,
-           $maxFeedItems = 1 )
+  $readRSSFunction = (Get-ChildItem function:\readRSS).ScriptBlock
+
+  $resultList = global:Worker $readRSSFunction $rssList $maxFeedItems
+
+  return $resultList
+}
+
+## Get entries of one ATOM/RSS-Feed
+Function global:readRSS{
+    
+    param([String]$rssFeed,
+          [int] $maxFeedItems = 1 )
  
     # Ensures that Invoke-WebRequest uses TLS 1.2
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -55,10 +68,5 @@ Function global:readRSS([string[]] $rssList, $maxFeedItems = 1){
         }
         $newsList.Add($row) > $null;
     }
-    return $newsList
-  }
-
-  $resultList = global:Worker $readRSS $rssList 1
-  return $resultList
-
+  return $newsList
 }
