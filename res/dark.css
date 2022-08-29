@@ -11,31 +11,34 @@ h1 {
     margin-top: 30px;
 }
 
-table
-{
+table {
     border: 1px solid;
     border-color: #0000 #0000 #CCC #0000;
     border: 1px solid rgb(190, 190, 190);
     margin-left: 25px;
 }
-tr:hover td
-{
-    background-color: #4C534C;
-    color: rgb(195, 195, 35, 1);
-}
+
 a:link {
     color: #f0f0f0;
     text-decoration: none;
 }
+
+tr:hover td,
+tr:hover td a {
+    background-color: #4C534C;
+    color: rgb(195, 195, 35, 1);
+}
+
 a:visited {
     color: green;
     text-decoration: none;
 }
-tr:nth-child(even)
-{
+
+tr:nth-child(even) {
     background-color: rgba(30, 30, 30, 0.80);
     color: #fff;
 }
+
 th {
     Text-Align: Left;
     Color: white;
@@ -54,7 +57,6 @@ td {
     Vertical-Align: Top;
     Padding: 5px;
 }
-
 
 tr td:first-child {
     white-space: nowrap;
