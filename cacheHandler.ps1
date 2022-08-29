@@ -8,7 +8,7 @@ $file = $path.LocalPath.replace('/','')
 # look for connected network adapters
 $online = $Null -ne (get-wmiobject win32_networkadapter -filter "netconnectionstatus = 2")
 
-$html = "C:\Users\Alex\Downloads\powershell-html-format-master\$file"
+$html = $global:httpRoot + "\$file"
 $script = (Split-Path $html -parent) + "\"
 $script += [System.IO.Path]::GetFileNameWithoutExtension($html) + "Reader.ps1"
 
@@ -44,4 +44,4 @@ if(Test-Path "$script"){
 }
 
 $Response.StatusCode=404
-$Response.Send("Sorry, $html was not found.")
+$Response.Send("Sorry, $file was not found.")
