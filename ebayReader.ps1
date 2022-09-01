@@ -1,12 +1,13 @@
 ﻿# Powershell-Script to generate "http://localhost:8800/ebay.html"
 
 # List your product-keywords here:
-$searchList = @(
-  'Denon+DBT'
-  'Denon+DN'
-  'Denon+DN-M2300r'
-  'DEQ2496'
-)
+if($Request.Query['search']){
+  $searchList = $Request.Query['search'].Split([Environment]::NewLine)
+} else {
+  $searchList = @(
+    'Denon+DN'
+  )  
+}
 
 $pageTitle = "Ebay-Watch"
 $Ebay = "https://www.ebay.de"
@@ -46,8 +47,8 @@ foreach($product in $searchList) {
         $EndDate = $Matches.EndDate
         $d = $EndDate -split ' '
         $realDate = "{0}{1}{2} {3}" -f $d[0],$d[1],(Get-Date).Year,$d[2]
-        $CloseDate = Get-Date $realDate -Format("dd.MMM.yyyy HH:mm")
-        $CloseDate = [datetime]$CloseDate
+        $de = New-Object system.globalization.cultureinfo(“de-DE”)
+        $CloseDate = [datetime]::ParseExact($realDate,'dd.MMM.yyyy HH:mm',$de)
         if((Get-Date).Month -gt $CloseDate.Month){
           $CloseDate.AddYears(1)
         }
@@ -106,10 +107,17 @@ foreach($product in $searchList) {
 $timestamp = Get-Date -Format "HH:mm"
 $ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$timestamp</div></div>"
 $ReportFooter = @("<br><a href='?refresh=1'>update</a><img id='floatingimg' onerror=""javascript: alert('failure')""></img>
-        <script src=res/tsorter.min.js></script>
-        <script src=res/moment.js></script>
-        <script src=res/dexie.min.js></script>
-        <script src=res/ebayTable.js></script>")
+<form method='GET'>
+<div>
+  <label for='search'>What are you looking for?</label>
+  <textarea name='search' id='search' wrap='off'>"+$searchList+"</textarea>
+  <input type='hidden' name='refresh' id='refresh' value='1'>
+  <button>Update</button>
+</div>
+</form>
+<script src='res/tsorter.min.js'></script>
+        <script src='res/moment.js'></script>
+        <script src='res/ebayTable.js'></script>")
 
 # switch to script-folder
 Push-Location $PSScriptRoot
