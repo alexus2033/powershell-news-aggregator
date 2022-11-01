@@ -7,6 +7,9 @@ Import-Module Polaris -ErrorAction Stop
 
 $global:httpRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Set-Location $global:httpRoot
+if($Env:DEBUG){
+    Write-Host "http-root: $($global:httpRoot)"    
+}
 
 # Handle root-folder
 New-PolarisRoute -Path /*.html -Method GET -ScriptPath .\cacheHandler.ps1

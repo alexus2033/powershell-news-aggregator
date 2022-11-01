@@ -5,10 +5,18 @@ $timeout = 15
 $path = [Uri]$Request.Url
 $file = $path.LocalPath.replace('/','')
 
-# look for connected network adapters
-$online = $Null -ne (get-wmiobject win32_networkadapter -filter "netconnectionstatus = 2")
+if($Env:DEBUG){
+    Write-Host "Request: $path"    
+}
 
-$html = $global:httpRoot + "\$file"
+# look for connected network adapters
+if($ENV:OS.StartsWith("Windows")){
+    $online = $Null -ne (get-wmiobject win32_networkadapter -filter "netconnectionstatus = 2")
+} else { # linux?
+    $online = $True
+}
+
+$html = Join-Path $global:httpRoot $file
 $script = (Split-Path $html -parent) + "\"
 $script += [System.IO.Path]::GetFileNameWithoutExtension($html) + "Reader.ps1"
 
@@ -44,4 +52,8 @@ if(Test-Path "$script"){
 }
 
 $Response.StatusCode=404
-$Response.Send("Sorry, $file was not found.")
+if($Env:DEBUG){
+    $Response.Send("Debug: $html was not found.")    
+} else {
+    $Response.Send("Sorry, $file was not found.")
+}
