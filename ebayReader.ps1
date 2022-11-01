@@ -40,7 +40,7 @@ foreach($product in $searchList) {
         $pubDate = $item.pubdate -replace " MST"
         $pubDate = Get-Date $pubDate
       }
-
+$blubb = "es war einmal"
       $Description = $item.description."#cdata-section"
       $ENDDATE_REGEX = [regex] ".*(End Date: <span>+)(?'EndDate'[^<]+).*"
       if($description -match $ENDDATE_REGEX) {
