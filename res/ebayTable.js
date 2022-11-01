@@ -3,8 +3,8 @@ let attached = false;
 let imageContainer = document.querySelector("#floatingimg");
 
 const followMouse = (event) => {
-    imageContainer.style.left = (event.x+15) + "px";
-    imageContainer.style.top = (event.y+12) + "px";
+    imageContainer.style.left = (event.x+1) + "px";
+    imageContainer.style.top = (event.y+1) + "px";
 }
 
 function showImage(url) {
@@ -27,7 +27,7 @@ window.onload = () => {
 
     // Find the table
     const dataTable = document.querySelector('table')
-    clientHeight
+
     // Give it an ID so it's easier to work with for CSS or subsequent JS
     dataTable.id = 'ebay-table'
 
