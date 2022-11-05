@@ -17,8 +17,8 @@ Function global:readRSS{
     param([String]$rssFeed,
           [int] $maxFeedItems = 1 )
  
-    # Ensures that Invoke-WebRequest uses TLS 1.2
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # Ensures that Invoke-WebRequest uses TLS Versions
+    [Net.ServicePointManager]::SecurityProtocol = "tls13, tls12, tls11, tls"
     $newsList = [System.Collections.ArrayList]@()
 
     $webResult = Invoke-RestMethod -Uri $rssFeed -UserAgent GetAgent #-Headers $global:headers
