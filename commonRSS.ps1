@@ -47,7 +47,7 @@ Function global:readRSS{
           $pubDate = [datetime]$webResult[$x].published
         } elseif ($webResult[$x].date) {
           $pubDate = $webResult[$x].date -replace "T"," "
-          $pubDate = [datetime]($blubb.substring(0,19))
+          $pubDate = [datetime]($pubDate.substring(0,19))
         } else {
           $pubDate = $webResult[$x].pubdate
         }
@@ -59,11 +59,20 @@ Function global:readRSS{
         } else {
           $link = $webResult[$x].link
         }
+        
+        if($webResult[$x].$description.'#cdata-section'){
+          $desc = $webResult[$x].$description.'#cdata-section'
+        } elseif($webResult[$x].summary) {
+          $desc = $webResult[$x].summary
+        } else {
+          $desc = $webResult[$x].$description
+        }
 
         $row = New-Object PSObject -Property @{
           Channel = $chanTitle
           Title = "<a href='$link' target='_blank'>$title</a>"
           Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
+          Description = $desc
           Date  = $pubDate
         }
         $newsList.Add($row) > $null;

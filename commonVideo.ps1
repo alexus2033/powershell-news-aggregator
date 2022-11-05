@@ -64,8 +64,8 @@ function global:CalcTime([string]$info){
 }
  
 function global:ReadVideoUrl($index = 1){
-   # Ensures that Invoke-WebRequest uses TLS 1.2
-   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+   # Ensures that Invoke-WebRequest uses TLS Versions
+   [Net.ServicePointManager]::SecurityProtocol = "tls13, tls12, tls11, tls"
    $videoSearch = "https://api.invidious.io/instances.json?pretty=1&sort_by=type,health"
 
    $videoPages = Invoke-WebRequest $videoSearch -UserAgent $global:agent -ErrorAction Stop | ConvertFrom-Json
@@ -74,17 +74,19 @@ function global:ReadVideoUrl($index = 1){
 
 Function global:readVideoList {
   
-  param([string[]] $channels,
-        [int] $maxChanItems = 1 )
-
-  $readVideoFunction = (Get-ChildItem function:\ReadInvidious).ScriptBlock
-
-  $videoSearch = global:ReadVideoUrl
-  $resultList = global:Worker $readVideoFunction $channels $videoSearch
-
-  return $resultList
-}
-
+    param([string[]] $channels,
+          [int] $maxChanItems = 1 )
+  
+    $readRSSFunction = (Get-ChildItem function:\readRSS).ScriptBlock
+    
+    $videoURL = global:ReadVideoUrl
+    for ($x = 0; $x -lt $channels.Count; $x++) {
+      $channels[$x]="$videoURL/feed/channel/$($channels[$x])"
+    }
+    $resultList = global:Worker $readRSSFunction $channels $maxChanItems
+    
+    return $resultList
+  }
 
 function global:ReadInvidious{
    
@@ -92,8 +94,8 @@ function global:ReadInvidious{
             [string]$videoSearch,
             [int]$maxChanItems = 1 )
     
-    # Ensures that Invoke-WebRequest uses TLS 1.2
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # Ensures that Invoke-WebRequest uses TLS Versions
+    [Net.ServicePointManager]::SecurityProtocol = "tls13, tls12, tls11, tls"
     $newsList = [System.Collections.ArrayList]@()
 
     $webResult = Invoke-WebRequest "$videoSearch/channel/$chan" -UserAgent GetAgent #-Headers global:headers
@@ -113,7 +115,8 @@ function global:ReadInvidious{
   
         $row = New-Object PSObject -Property @{
         Channel = $chanTitle.innerhtml
-        Title = "<a href='$link' target='_blank'>$($title.innerhtml)</a>"
+        Title = "<a href='$link' target='_blank'>$($
+        title.innerhtml)</a>"
         Link  = "<a href='$videoSearch/channel/$chan' target='_blank'>$($chanTitle.innerhtml)</a>"
         Date = (CalcTime $timeText)
         }
