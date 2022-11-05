@@ -18,6 +18,8 @@ ENV DEBUG 1
 
 COPY . /var/news/
 
-EXPOSE 8080/tcp
+VOLUME /var/news
+
+EXPOSE 8800/tcp
 
 CMD ["pwsh", "-File", "/var/news/webServer.ps1"]

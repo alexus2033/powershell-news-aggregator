@@ -10,7 +10,7 @@ if($Env:DEBUG){
 }
 
 # look for connected network adapters
-if($ENV:OS.StartsWith("Windows")){
+if($ENV:OS -and $ENV:OS.StartsWith("Windows")){
     $online = $Null -ne (get-wmiobject win32_networkadapter -filter "netconnectionstatus = 2")
 } else { # linux?
     $online = $True
