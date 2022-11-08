@@ -1,5 +1,6 @@
-:root {
-    color-scheme: dark;
+body {
+    Font-Family: Arial, Helvetica;
+    Font-Size: 11pt;
 }
 
 h1 {
@@ -7,3 +8,79 @@ h1 {
     margin-left: 25px;
     margin-top: 30px;
 }
+
+table
+{
+    border: 1px solid rgb(190, 190, 190);
+    background-color:#ffffff;
+    margin-left: 25px;
+}
+
+a:link {
+    Color: rgb(59, 80, 59);
+    text-decoration: none;
+}
+
+tr:hover td,
+tr:hover td a
+{
+    Background-Color: rgb(59, 80, 59);
+    Color: #ffffff;
+}
+
+a:visited {
+    color: green;
+    text-decoration: none;
+}
+
+tr:nth-child(even)
+{
+    Background-Color: rgb(213, 239, 235);
+}
+
+th {
+    Text-Align: Left;
+    Color: white;
+    Padding: 8px;
+    font-size: 1.1rem;
+    background-color: #4C534C;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid rgb(190, 190, 190);
+    cursor: pointer;
+}
+
+td {
+    Vertical-Align: Top;
+    Padding: 5px;
+}
+
+
+tr td:first-child {
+    white-space: nowrap;
+    border: 0;
+}
+
+.header {
+    display: flex;
+    align-items: left;
+}
+
+.timestamp {
+    white-space: nowrap;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 36px;
+    float: right;
+}
+
+#floatingimg {
+    position: absolute;
+    display: none;
+    max-height: 200;
+    z-index: 1;
+    border: 2px solid  rgb(59, 80, 59);
+    pointer-events: none;
+  }

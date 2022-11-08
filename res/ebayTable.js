@@ -3,8 +3,10 @@ let attached = false;
 let imageContainer = document.querySelector("#floatingimg");
 
 const followMouse = (event) => {
-    imageContainer.style.left = (event.x+1) + "px";
-    imageContainer.style.top = (event.y+1) + "px";
+    var offsetX = 15;
+    var offsetY = window.pageYOffset + 12;
+    imageContainer.style.left = (event.x+offsetX) + "px";
+    imageContainer.style.top = (event.y+offsetY) + "px";
 }
 
 function showImage(url) {
