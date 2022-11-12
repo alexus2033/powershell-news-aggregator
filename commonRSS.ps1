@@ -59,15 +59,15 @@ Function global:readRSS{
         } else {
           $link = $webResult[$x].link
         }
-        
-        if($webResult[$x].$description.'#cdata-section'){
-          $desc = $webResult[$x].$description.'#cdata-section'
-        } elseif($webResult[$x].summary) {
-          $desc = $webResult[$x].summary
-        } else {
-          $desc = $webResult[$x].$description
-        }
 
+        $tags = @('Description','Summary','Content')
+        foreach($tag in $tags){
+          if($webResult[$x].$tag){
+            $desc = global:getHtmlContent $webResult[$x].$tag $tag
+            break
+          }
+        }
+  
         $row = New-Object PSObject -Property @{
           Channel = $chanTitle
           Title = "<a href='$link' target='_blank'>$title</a>"
@@ -78,4 +78,33 @@ Function global:readRSS{
         $newsList.Add($row) > $null;
     }
   return $newsList
+}
+
+## try to get HTML-Tags, remove Javascript
+Function global:getHtmlContent{
+    
+  param([Object]$something,
+        [string]$tagName)
+  
+  if($something.'#cdata-section'){
+     $something = $something.'#cdata-section'
+  }
+  if($something.'#text'){
+     $something = $something.'#text'
+  }
+  if($something -is [Xml.XmlElement]){
+      $something = $something.outerXML
+  }
+
+  $doc = New-Object HtmlAgilityPack.HtmlDocument
+  $doc.LoadHtml($something);
+  if($doc.SelectNodes("//script").Count -gt 0){
+      Write-Host "Removing JavaScript..." 
+      $doc.SelectNodes("//script").RemoveAll()
+  }
+  if($doc.SelectSingleNode("//$tagName")){
+    return $doc.SelectSingleNode("//$tagName").InnerHtml
+  }
+  return $doc.DocumentNode.InnerHtml
+
 }

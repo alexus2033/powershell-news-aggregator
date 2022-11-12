@@ -27,11 +27,13 @@ Function global:SetPageHeader {
     [string] $html
   )
   $htmlDom = ConvertFrom-Html([System.Web.HttpUtility]::HtmlDecode($page))
+  $tab = $htmlDom.SelectSingleNode('//table')
+  $tab.id = "news-table"
   $root = $htmlDom.SelectSingleNode('//head')
   $nodes = @('<link rel="shortcut icon" href="res/favicon.ico"/>'
              '<link rel="stylesheet" href="res/dark.css" media="(prefers-color-scheme: dark)" />'
              '<link rel="stylesheet" href="res/light.css" media="(prefers-color-scheme: light)" />'
-             '<meta http-equiv="refresh" content="60"/>'
+             '<meta http-equiv="refresh" content="120"/>'
              '<meta charset="utf-8"/>')
   
   foreach($entry in $nodes){

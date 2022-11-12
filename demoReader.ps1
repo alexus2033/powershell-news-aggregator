@@ -19,7 +19,7 @@ $channels = @(
     'UC2DjFE7Xf11URZqWBigcVOQ' #EEV Blog
     'UCafxR2HWJRmMfSdyZXvZMTw' #look,mum no computers
 )
-$maxChanItems = 2
+$maxChanItems = 3
 
 .\common.ps1
 
@@ -35,16 +35,20 @@ $ReportData.Addrange($videos)
 
 # prepare html-table
 $timestamp = Get-Date -Format "HH:mm"
-$ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$timestamp</div></div>"
-$ReportFooter = @("<br><a href='?refresh=1'>update</a><script src=res/moment.js></script>
-        <script src=res/table.js></script>")
+$ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$timestamp</div></div>
+<div class='row'><div class='column'>"
+$ReportFooter = @("</div>
+    <div class='infocolumn'><h2>Details...</h2>
+    </div></div><br><a href='?refresh=1'>update</a><script src=res/moment.js></script>
+    <script src=res/table.js></script>")
 
 # switch to script-folder
 Push-Location $PSScriptRoot
 
 # Create an HTML table
-$page = ($ReportData |  Sort-Object {$_.Date -as [DateTime]} -Descending | Select-Object Date, Title ,@{N='Channel';E={$_.Link}} | ConvertTo-Html -title $pageTitle -PreContent "$($ReportHeader)" -PostContent "$($ReportFooter)")
-
+$page = ($ReportData |  Sort-Object {$_.Date -as [DateTime]} -Descending | Select-Object Date, Title ,@{N='Channel';E={$_.Link}}, Description | 
+                        ConvertTo-Html -title $pageTitle -PreContent "$($ReportHeader)" -PostContent "$($ReportFooter)")
+                    
 # Set html-headers and save it to "demo.html"
 $html = SetPageHeader $page 
 WritePage $html "demo.html"
