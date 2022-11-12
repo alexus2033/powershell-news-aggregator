@@ -1,20 +1,37 @@
 window.onload = () => {
 
-    // Find the table
-    const dataTable = document.querySelector('table')
+    const info = document.querySelector('div.infocolumn');
 
-    // Give it an ID so it's easier to work with for CSS or subsequent JS
-    dataTable.id = 'news-table'
+    // Find the table
+    const dataTable = document.getElementById('news-table');
 
     // Move the first row into a THEAD element that PowerShell doesn't add but is necessary for sorting
     const headerRow = dataTable.querySelector('tr:nth-child(1)')
     const thead = document.createElement('thead')
     thead.appendChild(headerRow)
 
-    dataTable.prepend(thead)
-    myTimer()
+    dataTable.prepend(thead);
+    myTimer();
+    display_details();
     // Update Times every 50 Secs
     setInterval(myTimer, 50000);
+
+    function display_details() {
+        var table = document.getElementById('news-table');
+        var cells = Array.from(document.querySelectorAll('#news-table tr td'));
+        for (var x = 0; x < cells.length; x++) {
+            // Take each cell
+            var cell = cells[x];
+            // do something on onclick event for cell
+            cell.onmouseover = function () {
+                // Get the row id where the cell exists
+                var rowId = this.parentNode.rowIndex;
+                var rowSelected = table.getElementsByTagName('tr')[rowId];
+                info.innerHTML =  rowSelected.cells[3].innerHTML;
+            }
+        }
+    
+    }
 
     function myTimer() {
         const col1=Array.from(document.querySelectorAll('#news-table tr td:nth-child(1)'));
