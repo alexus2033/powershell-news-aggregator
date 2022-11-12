@@ -4,6 +4,7 @@ local Webserver for your favorite RSS-Feeds and Youtube-Channels
 ## Dependencies
 - [Polaris](https://powershell.github.io/Polaris/) tiny server framework
 - [Power HTML](https://github.com/JustinGrote/PowerHTML) for parsing and manipulating HTML
+- [Moment.js](https://github.com/moment/moment) to display relative Time
 
 ## Quick Setup (local)
 1. [Download Repo](https://github.com/alexus2033/powershell-news-aggregator/archive/refs/heads/main.zip) and unzip content on your local disc
