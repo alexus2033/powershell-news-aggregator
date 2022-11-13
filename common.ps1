@@ -88,8 +88,17 @@ Function global:Worker($Script, $List, $params = $null, $maxTreads = 8){
   $Results = @()
   ForEach ($Job in $Jobs)
   {   #collect results here
-      $pmg = $Job.Pipe.EndInvoke($Job.Result)
-      $Results += $pmg
+      $jobError = $Job.Pipe.InvocationStateInfo.Reason.ErrorRecord.Exception
+      try {
+        $pmg = $Job.Pipe.EndInvoke($Job.Result)
+        $Results += $pmg
+      }
+      catch {
+        $jobError = $_.exception
+      }
+      if ($jobError) {
+        Write-Host $jobError.Message  -ForegroundColor Red
+      }
       $Job.Pipe.Dispose()
   }
 

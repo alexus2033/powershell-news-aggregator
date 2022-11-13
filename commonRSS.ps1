@@ -72,7 +72,7 @@ Function global:readRSS{
           Channel = $chanTitle
           Title = "<a href='$link' target='_blank'>$title</a>"
           Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
-          Description = $desc
+          Description = $desc.trim()
           Date  = $pubDate
         }
         $newsList.Add($row) > $null;

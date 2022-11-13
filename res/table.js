@@ -19,17 +19,25 @@ window.onload = () => {
     function display_details() {
         var table = document.getElementById('news-table');
         var cells = Array.from(document.querySelectorAll('#news-table tr td'));
-        for (var x = 0; x < cells.length; x++) {
-            // Take each cell
-            var cell = cells[x];
-            // do something on onclick event for cell
-            cell.onmouseover = function () {
+        cells.forEach(function(item){
+            item.onmouseover= function () {
                 // Get the row id where the cell exists
                 var rowId = this.parentNode.rowIndex;
                 var rowSelected = table.getElementsByTagName('tr')[rowId];
                 info.innerHTML =  rowSelected.cells[3].innerHTML;
             }
-        }
+        })
+        //for (var x = 0; x < cells.length; x++) {
+            // Take each cell
+        //    var cell = cells[x];
+            // do something on onclick event for cell
+        //    cell.onmouseover = function () {
+                // Get the row id where the cell exists
+        //        var rowId = this.parentNode.rowIndex;
+        //        var rowSelected = table.getElementsByTagName('tr')[rowId];
+        //        info.innerHTML =  rowSelected.cells[3].innerHTML;
+        //    }
+        //}
     
     }
 
