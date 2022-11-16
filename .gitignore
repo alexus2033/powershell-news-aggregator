@@ -1,6 +1,4 @@
-pics.html
-news.html
-splitter.html
+*.html
 newsReader.ps1
 testReader.ps1
 picsReader.ps1

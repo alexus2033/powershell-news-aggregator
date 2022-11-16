@@ -1,12 +1,15 @@
 ﻿# Powershell-Script to generate "http://localhost:8800/ebay.html"
 
-# List your product-keywords here:
-if($Request.Query['search']){
-  $searchList = $Request.Query['search'].Split([Environment]::NewLine)
-} else {
+# List default product keywords here:
+$searchList = @(
+    'Fallblattanzeige',
+    'Flipdot'
+)
+
+if($Request -and $Request.Query['search']){
   $searchList = @(
-    'Denon+DN'
-  )  
+    $Request.Query['search']
+  )
 }
 
 $pageTitle = "Ebay-Watch"
@@ -31,9 +34,9 @@ foreach($product in $searchList) {
           $title = $item.title
       }
     
-      if($item.published -ne $null){
+      if($item.published){
         $pubDate = Get-Date $item.published
-      } elseif ($item.date -ne $null) {
+      } elseif ($item.date) {
         $pubDate = $item.date -replace "T"," "
         $pubDate = Get-Date ($pubDate.substring(0,19))
       } else {
@@ -90,10 +93,10 @@ foreach($product in $searchList) {
 
       $row = New-Object PSObject -Property @{
         Channel = $chanTitle
-        Title = "<a href='$link' onpointerenter=""showImage('$imgLink')"" onpointerleave=""hideImage()"" target='_blank'>$title</a>"
+        Article = "<a href='$link' onpointerenter=""showImage('$imgLink')"" onpointerleave=""hideImage()"" target='_blank'>$title</a>"
         Category  = $cat
         Published  = $pubDate
-        EndDate = $CloseDate
+        Ends = $CloseDate
         Bids = $BidCount
         Price = $CurrentPrice
         FixPrice = $BuyItNowPrice
@@ -105,16 +108,9 @@ foreach($product in $searchList) {
 
 # prepare html-table
 $timestamp = Get-Date -Format "HH:mm"
-$ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$timestamp</div></div>"
-$ReportFooter = @("<br><a href='?refresh=1'>update</a><img id='floatingimg' onerror=""javascript: alert('failure')""></img>
-<form method='GET'>
-<div>
-  <label for='search'>What are you looking for?</label>
-  <textarea name='search' id='search' wrap='off'>"+$searchList+"</textarea>
-  <input type='hidden' name='refresh' id='refresh' value='1'>
-  <button>Update</button>
-</div>
-</form>
+$ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$timestamp</div><form>
+<input type='text' name='search' value='$($searchList[0])'><input type='hidden' name='refresh' value='1'><input type='submit' value='Update'></form></div>"
+$ReportFooter = @("<img id='floatingimg' onerror=""javascript: alert('failure')""></img>
 <script src='res/tsorter.min.js'></script>
         <script src='res/moment.js'></script>
         <script src='res/ebayTable.js'></script>")
@@ -123,7 +119,7 @@ $ReportFooter = @("<br><a href='?refresh=1'>update</a><img id='floatingimg' oner
 Push-Location $PSScriptRoot
 
 # Create a sorted HTML table
-$page = ($ReportData |  Sort-Object {$_.EndDate -as [DateTime]} | Select-Object Published, EndDate, Title, FixPrice, Price, Bids, Category | ConvertTo-Html -CSSUri res/dark.css -title $pageTitle -PreContent "$ReportHeader" -PostContent "$ReportFooter")
+$page = ($ReportData |  Sort-Object {$_.EndDate -as [DateTime]} | Select-Object Published, Ends, Article, FixPrice, Price, Bids, Category | ConvertTo-Html -title $pageTitle -PreContent "$ReportHeader" -PostContent "$ReportFooter")
 
 $html = global:SetPageHeader $page 
 global:writePage $html "ebay.html"

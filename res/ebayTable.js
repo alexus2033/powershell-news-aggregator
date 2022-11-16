@@ -42,7 +42,7 @@ window.onload = () => {
 
     // Mark the named columns as numeric so it sorts correctly
     let numCols = ['FixPrice','Price','Bids']
-    let linkCols = ['Title']
+    let linkCols = ['Article']
     const hd = Array.from(document.querySelectorAll('#ebay-table tr:nth-child(1) th'))
     numCols.forEach(function(item) {
         var col = hd.find(el => el.textContent === item);
