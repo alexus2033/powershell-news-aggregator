@@ -39,7 +39,7 @@ $ReportHeader ="<div class='header'><h1>$pageTitle</h1><div class='timestamp'>$t
 <div class='row'><div class='column'>"
 $ReportFooter = @("</div>
     <div class='infocolumn'><h2>Details...</h2>
-    </div></div><br><a href='?refresh=1'>update</a><script src=res/moment.js></script>
+    </div></div><br><a href='?refresh=1'>update</a><script src=res/moment.min.js></script>
     <script src=res/table.js></script>")
 
 # switch to script-folder

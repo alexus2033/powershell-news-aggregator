@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.13
+FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.14
 
 LABEL org.opencontainers.image.authors="alexus2033@github.com"
 
@@ -17,6 +17,8 @@ ENV TZ=Europe/Berlin
 ENV DEBUG 1
 
 COPY . /var/news/
+
+ADD https://momentjs.com/downloads/moment.min.js /var/news/res/
 
 VOLUME /var/news
 
