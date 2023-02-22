@@ -27,18 +27,10 @@ window.onload = () => {
                 info.innerHTML =  rowSelected.cells[3].innerHTML;
             }
         })
-        //for (var x = 0; x < cells.length; x++) {
-            // Take each cell
-        //    var cell = cells[x];
-            // do something on onclick event for cell
-        //    cell.onmouseover = function () {
-                // Get the row id where the cell exists
-        //        var rowId = this.parentNode.rowIndex;
-        //        var rowSelected = table.getElementsByTagName('tr')[rowId];
-        //        info.innerHTML =  rowSelected.cells[3].innerHTML;
-        //    }
-        //}
-    
+        var rows = table.getElementsByTagName('tr');
+        if(rows.length > 1){ //display first item
+            info.innerHTML = rows[1].cells[3].innerHTML;    
+        }
     }
 
     function myTimer() {
