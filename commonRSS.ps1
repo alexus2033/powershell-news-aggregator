@@ -2,7 +2,7 @@
 Function global:readRSSList {
   
   param([string[]] $rssList,
-        [int] $maxFeedItems = 1 )
+        [int] $maxFeedItems = 1)
 
   $readRSSFunction = (Get-ChildItem function:\readRSS).ScriptBlock
 
@@ -15,7 +15,8 @@ Function global:readRSSList {
 Function global:readRSS{
     
     param([String]$rssFeed,
-          [int] $maxFeedItems = 1 )
+          [int] $maxFeedItems = 1,
+          [string[]] $exclude = @("heise+ |*","(g+) *"))
  
     # Ensures that Invoke-WebRequest uses TLS Versions
     [Net.ServicePointManager]::SecurityProtocol = "tls13, tls12, tls11, tls"
@@ -24,7 +25,8 @@ Function global:readRSS{
     $webResult = Invoke-RestMethod -Uri $rssFeed -UserAgent GetAgent #-Headers $global:headers
     if($webResult.count -eq 0) { break }
 
-    for($x=0;$x -le $maxFeedItems-1;$x++)
+    $x = 0
+    while($newsList.Count -lt $maxFeedItems -and $x -le $webResult.count)
     {
         if($webResult[$x].title -is [array]){
             $title = $webResult[$x].title[0]
@@ -59,23 +61,32 @@ Function global:readRSS{
         } else {
           $link = $webResult[$x].link
         }
-
-        $tags = @('Description','Summary','Content')
-        foreach($tag in $tags){
-          if($webResult[$x].$tag){
-            $desc = global:getHtmlContent $webResult[$x].$tag $tag
-            break
+  
+        $skipentry = $false
+        foreach($badTitle in $exclude){
+          if ($title -like $badTitle) {
+            $skipentry = $true
           }
         }
-  
-        $row = New-Object PSObject -Property @{
-          Channel = $chanTitle
-          Title = "<a href='$link' target='_blank'>$title</a>"
-          Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
-          Description = $desc.trim()
-          Date  = $pubDate
+        if($skipentry -eq $false){
+          $tags = @('Description','Summary','Content')
+          foreach($tag in $tags){
+            if($webResult[$x].$tag){
+              $desc = global:getHtmlContent $webResult[$x].$tag $tag
+              break
+            }
+          }
+
+          $row = New-Object PSObject -Property @{
+            Channel = $chanTitle
+            Title = "<a href='$link' target='_blank'>$title</a>"
+            Link  = "<a href='$link' target='_blank'>$chanTitle</a>"
+            Description = $desc.trim()
+            Date  = $pubDate
+          }
+          $newsList.Add($row) > $null;
         }
-        $newsList.Add($row) > $null;
+        $x++
     }
   return $newsList
 }
