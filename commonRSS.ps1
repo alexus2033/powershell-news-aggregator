@@ -16,7 +16,7 @@ Function global:readRSS{
     
     param([String]$rssFeed,
           [int] $maxFeedItems = 1,
-          [string[]] $exclude = @("heise+ |*","(g+) *"))
+          [string[]] $exclude = @("Anzeige: *","heise+ |*","(g+) *","* russisch*","* Russland *","* ukrainisch*","* Ukraine *"))
  
     # Ensures that Invoke-WebRequest uses TLS Versions
     [Net.ServicePointManager]::SecurityProtocol = "tls13, tls12, tls11, tls"

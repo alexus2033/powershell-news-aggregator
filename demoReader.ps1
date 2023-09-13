@@ -21,6 +21,8 @@ $channels = @(
 )
 $maxChanItems = 3
 
+# switch to script-folder
+Push-Location $PSScriptRoot
 .\common.ps1
 
 $ReportData = [System.Collections.ArrayList]@()
@@ -41,9 +43,6 @@ $ReportFooter = @("</div>
     <div class='infocolumn'><h2>Details...</h2>
     </div></div><br><a href='?refresh=1'>update</a><script src=res/moment.min.js></script>
     <script src=res/table.js></script>")
-
-# switch to script-folder
-Push-Location $PSScriptRoot
 
 # Create an HTML table
 $page = ($ReportData |  Sort-Object {$_.Date -as [DateTime]} -Descending | Select-Object Date, Title ,@{N='Channel';E={$_.Link}}, Description | 
